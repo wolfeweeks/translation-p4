@@ -24,6 +24,7 @@ if __name__ == '__main__':
         # print('semantics ok')
         f.close()
         target.close()
+        print('target generated: ' + sys.argv[-1] + '.asm')
 
     else:
         # code to check if stdin is redirected or not found at link below
@@ -65,6 +66,7 @@ if __name__ == '__main__':
         f.close()
         target.close()
         os.remove('tmp')
+        print('target generated: a.asm')
 
 # f = open('./testFile', 'r')
 

@@ -1,4 +1,5 @@
 import sys
+import os
 
 class Stack:
     def __init__(self):
@@ -36,8 +37,7 @@ def newName(nameType):
         return 'L' + str(totalLabels)
 
 
-def writeBranch(op, tempLabel):
-    global target
+def writeBranch(target, op, tempLabel):
     if op == '<=':
         target.write('BRPOS ' + tempLabel + '\n')
     elif op == '%':
@@ -70,6 +70,8 @@ def staticSemantics(target, root, blockNo):
                     find = stack.find(root.tokens[0])
                     if find == -1:
                         print('SEMANTICS ERROR: On line ' + str(root.tokenLines[0]) + ': identifier \'' + root.tokens[0] + '\' was not instantiated')
+                        target.close()
+                        os.remove(target.name)
                         sys.exit()
                     else:
                         target.write('LOAD ' + root.tokens[0] + '\n')
@@ -128,6 +130,8 @@ def staticSemantics(target, root, blockNo):
                     find = stack.find(root.tokens[0])
                     if find == -1:
                         print('SEMANTICS ERROR: On line ' + str(root.tokenLines[0]) + ': identifier \'' + root.tokens[0] + '\' was not instantiated')
+                        target.close()
+                        os.remove(target.name)
                         sys.exit()
                     else:
                         target.write('STACKR ' + str(find) + '\n')
@@ -154,7 +158,7 @@ def staticSemantics(target, root, blockNo):
             staticSemantics(target, root.children[0], blockNo)
             target.write('SUB ' + tempVar + '\n')
             tempLabel = newName('label')
-            writeBranch(root.children[1].tokens[0], tempLabel)
+            writeBranch(target, root.children[1].tokens[0], tempLabel)
             staticSemantics(target, root.children[3], blockNo)
             target.write(tempLabel + ': NOOP\n')
             return
@@ -189,6 +193,8 @@ def staticSemantics(target, root, blockNo):
                 find = stack.find(root.tokens[0])
                 if find >= 0 and find < varCounts[blockNo]:
                     print('SEMANTICS ERROR: On line ' + str(root.tokenLines[0]) + ': multiple definitiions of \'' + root.tokens[0] + '\'')
+                    target.close()
+                    os.remove(target.name)
                     sys.exit()
             
             stack.push(root.tokens[0])
@@ -207,6 +213,8 @@ def staticSemantics(target, root, blockNo):
             find = stack.find(root.tokens[0])
             if find == -1:
                 print('SEMANTICS ERROR: On line ' + str(root.tokenLines[0]) + ': identifier \'' + root.tokens[0] + '\' was not instantiated')
+                target.close()
+                os.remove(target.name)
                 sys.exit()
             else:
                 target.write('STACKW ' + str(find) + '\n')
@@ -221,7 +229,7 @@ def staticSemantics(target, root, blockNo):
             staticSemantics(target, root.children[0], blockNo)
             target.write('SUB ' + tempVar + '\n')
             breakLabel = newName('label')
-            writeBranch(root.children[1].tokens[0], breakLabel)
+            writeBranch(target, root.children[1].tokens[0], breakLabel)
             staticSemantics(target, root.children[3], blockNo)
             target.write('BR ' + loopLabel + '\n')
             target.write(breakLabel + ': NOOP\n')

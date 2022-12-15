@@ -14,8 +14,3 @@ if [ "$#" -ne 1 ]; then
 else
  python2 comp.py "$1"
 fi
-
-#if [ "$#" -ne 2 ]; then
-#  echo blah
-#  python2 P2.py "$1"
-#fi
