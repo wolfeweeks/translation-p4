@@ -1,0 +1,15 @@
+var x : 1 ;
+begin
+   scan x ;
+   begin 
+     var x : 2 ;
+     scan x ; 
+     begin
+       var x : 3 ;
+       scan x ;
+       print ( x ) ;
+     end
+     print ( x ) ; 
+   end 
+   print ( x ) ;
+end
